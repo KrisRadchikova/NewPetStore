@@ -26,4 +26,8 @@ public class Category {
     @NotEmpty
     @Size(min = 3)
     private String name;
+
+    public Category(@NotBlank @NotEmpty @Size(min = 3) String name) {
+        this.name = name;
+    }
 }

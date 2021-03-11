@@ -3,9 +3,7 @@ package by.tms.petstore.service;
 import by.tms.petstore.model.User;
 import by.tms.petstore.repository.UserRepository;
 import by.tms.petstore.resource.exception.ExistsException;
-import by.tms.petstore.resource.exception.InvalidSuppliedException;
 import by.tms.petstore.resource.exception.NotFoundException;
-import by.tms.petstore.storage.UserTokenStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -13,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.ignoreCase;
 
@@ -20,8 +19,8 @@ import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatc
 public class UserService {
 
     private UserRepository userRepository;
+    private KeyService keyService;
 
-    private UserTokenStorage userTokenStorage;
 
     //get all users
     public List<User> getAllUsers() {
@@ -29,6 +28,12 @@ public class UserService {
     }
 
     //get user by name
+    public User findUserByUserName(String userName) {
+        if (userRepository.findUserByUserName(userName) != null) {
+            return userRepository.findUserByUserName(userName);
+        }
+        throw new NotFoundException("Some wrong, user with name " + userName + " not found");
+    }
 
     //get user by id
     public Optional<User> findUserById(long id) {
@@ -77,31 +82,26 @@ public class UserService {
         throw new ExistsException("This user exists");
     }
 
-    public boolean validationUser(String token) {
-        return userTokenStorage.userTokenExists(token);
-    }
-
-    public void addUserToken(String token) {
-        userTokenStorage.saveUserToken(token);
-    }
-
-    public String getUserToken(String tokens) {
-        List<String> allUserTokens = userTokenStorage.getAllUserTokens();
-        for (String token : allUserTokens) {
-            if (token.equals(tokens)) {
-                return token;
+    public String auth(User user) {
+        User thisParticularUser = findUserByUserName(user.getUserName());
+        if (thisParticularUser != null) {
+            if (thisParticularUser.equals(user)) {
+                UUID key = UUID.randomUUID();
+                String uuidKey = key.toString();
+                keyService.saveKey(uuidKey, thisParticularUser);
+                return uuidKey;
+            } else {
+                return null;
             }
-        }
-        throw new InvalidSuppliedException("Invalid token supplied");
+        } else
+            throw new NotFoundException("This user not found");
     }
 
-    @Autowired
-    public void setUserTokenStorage(UserTokenStorage userTokenStorage) {
-        this.userTokenStorage = userTokenStorage;
-    }
 
     @Autowired
-    public void setUserRepository(UserRepository userRepository) {
+    public void setUserRepository(UserRepository userRepository, KeyService keyService) {
         this.userRepository = userRepository;
+        this.keyService = keyService;
     }
+
 }

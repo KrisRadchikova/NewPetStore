@@ -10,15 +10,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
-public class UserInterceptor implements HandlerInterceptor {
+public class AdminInterceptor implements HandlerInterceptor {
 
     private KeyService keyService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String userKey = request.getHeader("X-Key");
-        UserStatus userStatus = keyService.validKey(userKey);
-        if (userStatus.equals(UserStatus.USER)) {
+        String adminKey = request.getHeader("X-Key");
+        UserStatus userStatus = keyService.validKey(adminKey);
+        if (userStatus.equals(UserStatus.ADMIN)) {
             return true;
         }
         return false;

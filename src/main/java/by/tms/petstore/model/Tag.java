@@ -26,4 +26,8 @@ public class Tag {
     @NotBlank
     @Size(min = 3)
     private String name;
+
+    public Tag(@NotEmpty @NotBlank @Size(min = 3) String name) {
+        this.name = name;
+    }
 }

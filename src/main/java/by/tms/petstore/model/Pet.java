@@ -38,4 +38,11 @@ public class Pet {
     @NotEmpty
     @NotBlank
     private List<Tag> tags;
+
+    public Pet(@NotEmpty @NotBlank Category category, @NotEmpty @NotBlank @Size(min = 3) String name, @NotEmpty @NotBlank PetStatus status, @NotEmpty @NotBlank List<Tag> tags) {
+        this.category = category;
+        this.name = name;
+        this.status = status;
+        this.tags = tags;
+    }
 }

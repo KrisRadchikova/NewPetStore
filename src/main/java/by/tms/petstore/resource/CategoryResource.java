@@ -27,8 +27,9 @@ public class CategoryResource {
     }
 
     @PostMapping(path = "/add")
-    public Category addNewCategory(@RequestBody Category category) {
-        return categoryService.addNewCategory(category);
+    public boolean addNewCategory(@RequestBody Category category) {
+        categoryService.addNewCategory(category);
+        return true;
     }
 
     @DeleteMapping(path = "/delete/{id}")

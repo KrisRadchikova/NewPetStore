@@ -3,17 +3,12 @@ package by.tms.petstore.service;
 import by.tms.petstore.model.Pet;
 import by.tms.petstore.model.PetStatus;
 import by.tms.petstore.repository.PetRepository;
-import by.tms.petstore.resource.exception.ExistsException;
 import by.tms.petstore.resource.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
-import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.ignoreCase;
 
 @Service
 public class PetService {
@@ -22,17 +17,7 @@ public class PetService {
 
     //add new pet
     public Pet addNewPet(Pet pet) {
-        ExampleMatcher addNewPetMatcher = ExampleMatcher.matching()
-                .withIgnorePaths("id")
-                .withMatcher("category", ignoreCase())
-                .withMatcher("name", ignoreCase())
-                .withMatcher("status", ignoreCase())
-                .withMatcher("tags", ignoreCase());
-        Example<Pet> petExample = Example.of(pet, addNewPetMatcher);
-        if (!petRepository.exists(petExample)) {
-            return petRepository.save(pet);
-        }
-        throw new ExistsException("This pet exists");
+        return petRepository.save(pet);
     }
 
     //find pet by status

@@ -25,13 +25,14 @@ public class CategoryService {
     }
 
     //add new category
-    public Category addNewCategory(Category category) {
+    public boolean addNewCategory(Category category) {
         ExampleMatcher addNewCategoryMatcher = ExampleMatcher.matching()
                 .withIgnorePaths("id")
                 .withMatcher("name", ignoreCase());
         Example<Category> categoryExample = Example.of(category, addNewCategoryMatcher);
         if (!categoryRepository.exists(categoryExample)) {
-            return categoryRepository.save(category);
+            categoryRepository.save(category);
+            return true;
         }
         throw new ExistsException("This category exists");
     }

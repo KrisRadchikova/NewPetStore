@@ -51,5 +51,6 @@ public class User {
     @NotBlank
     @Size(min = 7)
     private String phone;
-   // private int userStatus;  //-?
+
+    private UserStatus userStatus;
 }

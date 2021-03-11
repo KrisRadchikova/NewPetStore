@@ -48,8 +48,9 @@ public class TagService {
     public void deleteTagById(long id) {
         if (tagRepository.findById(id).isPresent()) {
             tagRepository.deleteById(id);
+        } else {
+            throw new NotFoundException("Tag with id " + id + " not found");
         }
-        throw new NotFoundException("Tag with id " + id + " not found");
     }
 
     @Autowired
