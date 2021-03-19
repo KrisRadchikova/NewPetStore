@@ -26,33 +26,25 @@ public class CategoryService {
 
     //add new category
     public boolean addNewCategory(Category category) {
-        ExampleMatcher addNewCategoryMatcher = ExampleMatcher.matching()
-                .withIgnorePaths("id")
-                .withMatcher("name", ignoreCase());
-        Example<Category> categoryExample = Example.of(category, addNewCategoryMatcher);
-        if (!categoryRepository.exists(categoryExample)) {
             categoryRepository.save(category);
             return true;
         }
-        throw new ExistsException("This category exists");
-    }
 
     //find category by id
     public Optional<Category> findCategoryById(long id) {
         if (categoryRepository.findById(id).isPresent()) {
             return categoryRepository.findById(id);
-        } else {
-            throw new NotFoundException("Category not found");
         }
+        throw new NotFoundException("Category not found");
     }
 
     //delete category
-    public void deleteCategoryById(long id) {
+    public String deleteCategoryById(long id) {
         if (categoryRepository.findById(id).isPresent()) {
             categoryRepository.deleteById(id);
-        } else {
-            throw new NotFoundException("Category with id " + id + " not found");
+            return "Category is deleted";
         }
+        throw new NotFoundException("Category with id " + id + " not found");
     }
 
     @Autowired

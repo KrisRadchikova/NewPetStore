@@ -9,17 +9,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test") //resources
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class TagServiceTest {
+
+    private List<String> TAGS = new ArrayList<>();
+
+    public TagServiceTest() {
+        TAGS.add("sphinx");
+        TAGS.add("abyssinian");
+    }
 
     @Autowired
     public TagService tagService;
@@ -33,32 +41,37 @@ class TagServiceTest {
     @Test
     @Order(2)
     void addNewTag() {
-        Tag tag = tagService.addNewTag(new Tag("sphinx"));
-        Tag tag2 = tagService.addNewTag(new Tag("abyssinian"));
-        assertEquals("sphinx", tag.getName());
-        assertEquals("abyssinian", tag2.getName());
-
+        List<String> saved = TAGS.stream()
+                .map(Tag::new)
+                .map(tagService::addNewTag)
+                .map(Tag::getName)
+                .collect(Collectors.toList());
+        assertEquals(saved, TAGS);
     }
 
     @Test
     @Order(4)
     void getAllTags() {
         List<Tag> tags = tagService.getAllTags();
-        assertEquals(2, tags.size());
+        assertEquals(TAGS.size(), tags.size());
     }
-
 
     @Test
     @Order(3)
     void findTagById() {
         Optional<Tag> tag = tagService.findTagById(1);
         assertTrue(tag.isPresent());
+        assertEquals("sphinx", tag.get().getName());
     }
 
     @Test
     @Order(5)
     void deleteTagById() {
-        tagService.deleteTagById(1);
-        assertEquals(1, tagService.getAllTags().size());
+        String tag = tagService.deleteTagById(1);
+        assertNull(tag);
+        /*if(tagService.findTagById(1).isPresent()) {
+            fail("Test failed");
+        }
+        assertNull(tagService.findTagById(1));*/
     }
 }

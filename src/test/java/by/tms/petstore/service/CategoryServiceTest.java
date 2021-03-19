@@ -13,8 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest
@@ -27,12 +26,6 @@ class CategoryServiceTest {
     public CategoryService categoryService;
 
 
-   /* @BeforeAll
-    public void categoriesForTests(){
-        categoryService.addNewCategory(new Category("DogTest"));
-        categoryService.addNewCategory(new Category("CatTest"));
-    }*/
-
     @Test
     @Order(1)
     void contextLoads() {
@@ -43,18 +36,16 @@ class CategoryServiceTest {
     @Test()
     @Order(2)
     void addNewCategoryTest() {
-        Category category = new Category("MiniPigTest");
-        categoryService.addNewCategory(new Category("DogTest"));
-        categoryService.addNewCategory(new Category("CatTest"));
+        Category category = new Category("CatTest");
         boolean isCategoryCreated = categoryService.addNewCategory(category);
         assertTrue(isCategoryCreated);
+        assertEquals("CatTest", categoryService.findCategoryById(category.getId()).get().getName());
     }
-
     @Test
     @Order(4)
     void getAllCategoriesTest() {
         List<Category> categories = categoryService.getAllCategories();
-        assertEquals(3, categories.size());
+        assertEquals(1, categories.size()); // --?
     }
 
     @Test
@@ -62,12 +53,14 @@ class CategoryServiceTest {
     void findCategoryByIdTest() {
         Optional<Category> category = categoryService.findCategoryById(1);
         assertTrue(category.isPresent());
+        assertEquals("CatTest", category.get().getName());
     }
 
     @Test
     @Order(5)
     void deleteCategoryByIdTest() {
-        categoryService.deleteCategoryById(1);
-        assertEquals(2, categoryService.getAllCategories().size());
+        String category = categoryService.deleteCategoryById(1);
+        assertNull(category);
+
     }
 }

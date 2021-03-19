@@ -51,7 +51,7 @@ public class PetService {
     }
 
     //delete pet
-    public void deletePetById(long id) {
+    public String deletePetById(long id) {
         if (petRepository.findById(id).isPresent()) {
             petRepository.deleteById(id);
         }

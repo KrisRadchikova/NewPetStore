@@ -20,7 +20,7 @@ public class CategoryResource {
 
     @GetMapping(path = "/getAll")
     public ResponseEntity<List<Category>> getAllCategories() {
-        log.info("Get all catigories");
+        log.info("Get all categories");
         return new ResponseEntity<>(categoryService.getAllCategories(), HttpStatus.OK);
     }
 

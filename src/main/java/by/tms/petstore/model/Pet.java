@@ -39,7 +39,7 @@ public class Pet {
     @NotBlank
     private List<Tag> tags;
 
-    public Pet(@NotEmpty @NotBlank Category category, @NotEmpty @NotBlank @Size(min = 3) String name, @NotEmpty @NotBlank PetStatus status, @NotEmpty @NotBlank List<Tag> tags) {
+    public Pet(Category category, String name, PetStatus status, List<Tag> tags) {
         this.category = category;
         this.name = name;
         this.status = status;

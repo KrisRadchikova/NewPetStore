@@ -26,15 +26,8 @@ public class TagService {
 
     //add new tag
     public Tag addNewTag(Tag tag) {
-        ExampleMatcher addNewTagMatcher = ExampleMatcher.matching()
-                .withIgnorePaths("id")
-                .withMatcher("name", ignoreCase());
-        Example<Tag> tagExample = Example.of(tag, addNewTagMatcher);
-        if (!tagRepository.exists(tagExample)) {
             return tagRepository.save(tag);
         }
-        throw new ExistsException("This tag exists");
-    }
 
     //find tag by id
     public Optional<Tag> findTagById(long id) {
@@ -45,13 +38,14 @@ public class TagService {
     }
 
     //delete tag
-    public void deleteTagById(long id) {
+    public String deleteTagById(long id) {
         if (tagRepository.findById(id).isPresent()) {
             tagRepository.deleteById(id);
-        } else {
-            throw new NotFoundException("Tag with id " + id + " not found");
+            return "Tag deleted";
         }
+        throw new NotFoundException("Tag with id " + id + " not found");
     }
+
 
     @Autowired
     public void setTagRepository(TagRepository tagRepository) {
